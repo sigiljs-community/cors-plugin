@@ -21,7 +21,7 @@ export default class CorsPlugin extends SigilPlugin<CorsPluginConfiguration> {
   public onInitialize(): any {
     const { allowOrigins, allowMethods, allowHeaders, exposeHeaders, allowCredentials, maxAge } = this.$pluginConfig
 
-    this.sigil.addMiddleware((request, response) => {
+    this.sigil.addMiddleware((request, response, mod) => {
       const origin = request.headers.get("origin")
       if (!origin || request.method !== "OPTIONS") return
       if (allowOrigins && !allowOrigins.includes(origin)) return
@@ -33,6 +33,8 @@ export default class CorsPlugin extends SigilPlugin<CorsPluginConfiguration> {
       if (allowHeaders) headers.set("Access-Control-Allow-Headers", allowHeaders.join(","))
       if (allowCredentials) headers.set("Access-Control-Allow-Credentials", allowCredentials ? "true" : "false")
       if (exposeHeaders) headers.set("Access-Control-Expose-Headers", exposeHeaders.join(","))
+
+      if (mod.headers) Object.entries(mod.headers).forEach(([key, value]) => headers.append(key, value))
 
       return response.rawResponse(null, headers, 204)
     })
