@@ -16,8 +16,7 @@ export default defineConfig({
   ],
   build: {
     target: "node24",
-    minify: false,
-    sourcemap: true,
+    minify: true,
     lib: {
       entry: {
         "cors-plugin": path.resolve(__dirname, "src/index.ts"),
