@@ -9,6 +9,7 @@ export interface CorsPluginConfiguration {
   allowCredentials?: boolean
   maxAge?: number
   exposeHeaders?: string[]
+  enableMiddlewareDebug?: boolean
 }
 
 export default class CorsPlugin extends SigilPlugin<CorsPluginConfiguration> {
@@ -19,10 +20,23 @@ export default class CorsPlugin extends SigilPlugin<CorsPluginConfiguration> {
   }
 
   public onInitialize(): any {
-    const { allowOrigins, allowMethods, allowHeaders, exposeHeaders, allowCredentials, maxAge } = this.$pluginConfig
+    const { allowOrigins, allowMethods, allowHeaders, exposeHeaders, allowCredentials, maxAge, enableMiddlewareDebug } = this.$pluginConfig
 
     this.sigil.addMiddleware((request, response, mod) => {
       const origin = request.headers.get("origin")
+
+      this.logger({
+        level: "info",
+        json: {
+          debug: true,
+          origin,
+          allowOrigins,
+          method: request.method
+        },
+        message: `Middleware debug: ${ request.method } ${ origin } ${ allowOrigins }`,
+        condition: enableMiddlewareDebug
+      })
+
       if (!origin || request.method !== "OPTIONS") return
       if (allowOrigins && !allowOrigins.includes(origin)) return
 
