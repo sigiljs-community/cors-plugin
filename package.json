@@ -48,7 +48,7 @@
     "url": "https://github.com/sigiljs-community/cors-plugin/issues"
   },
   "homepage": "https://github.com/sigiljs-community/cors-plugin#readme",
-  "dependencies": {
-    "@sigiljs/sigil": "^0.2.0"
+  "peerDependencies": {
+    "@sigiljs/sigil": "^0.3.1"
   }
 }
